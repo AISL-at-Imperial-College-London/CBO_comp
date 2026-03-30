@@ -20,6 +20,6 @@ To ensure maximum compatibility with Simulink, this repository uses a flat file 
 5. **Tuning:** Hyperparameters (like safety margins, tracking weights, and target tolerances) can be modified directly at the bottom of the main S-function scripts inside the `initParams` function.
 
 ## Performance Note: Anti-Surge Control (ASC)
-The detailed Anti-Surge Control (ASC) blocks have been reintegrated into the Simulink models to provide high-fidelity dynamic responses near the surge limit. However, this significantly increases the computational load and overall simulation time. 
+The detailed Anti-Surge Control (ASC) blocks have been integrated into the Simulink models to provide high-fidelity dynamic responses near the surge limit. However, this significantly increases the computational load and overall simulation time. 
 
 **For faster simulations (Rapid Prototyping):** You can easily bypass the full ASC dynamics. Simply delete or disconnect the ASC block in the Simulink model and replace it with the **Step block** (labeled for recycle valve opening) located immediately next to it. This provides a simplified, much faster approximation of the valve dynamics, which is highly recommended when tuning the optimization hyperparameters.
