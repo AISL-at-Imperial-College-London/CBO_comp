@@ -1,4 +1,4 @@
-function J = objectiveFun_UCB(T, massflow_ref, GP_Power, GP_Pdis, GP_ds1, GP_ds2, GP_ds3, params)
+function J = objectiveFun_UCB_parallel(T, massflow_ref, GP_Power, GP_Pdis, GP_ds1, GP_ds2, GP_ds3, params)
 % OBJECTIVEFUN Computes the composite acquisition function cost.
 %
 % This function balances power minimization (with uncertainty exploration),

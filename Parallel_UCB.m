@@ -127,7 +127,7 @@ function [T_next, Dataset_T, Dataset_Y, GP_Power, GP_Pdis, GP_ds1, GP_ds2, GP_ds
         if nPoints < params.MinPointsForGP
             T_next = chooseNextDOEPoint(DOE_points, Dataset_T, params);
         elseif ~isempty(GP_Power)
-            T_next = solveOptimization_UCB(Current_setpoint, massflow_ref, GP_Power, GP_Pdis, GP_ds1, GP_ds2, GP_ds3, params);
+            T_next = solveOptimization_UCB_parallel(Current_setpoint, massflow_ref, GP_Power, GP_Pdis, GP_ds1, GP_ds2, GP_ds3, params);
         end
     end
     
@@ -166,9 +166,9 @@ end
 %% ------------------------------------------------------------------------
 function p = initParams(p)
     if ~isfield(p, 'sampleTime'), p.sampleTime = 50; end
-    if ~isfield(p, 'T_nom'), p.T_nom = [16; 16; 16]; end
-    if ~isfield(p, 'T_lower_offset'), p.T_lower_offset = [-5; -5; -5]; end
-    if ~isfield(p, 'T_upper_offset'), p.T_upper_offset = [ 5;  5;  5]; end
+    if ~isfield(p, 'T_nom'), p.T_nom = [16.5; 16.5; 16.5]; end
+    if ~isfield(p, 'T_lower_offset'), p.T_lower_offset = [-7.5; -7.5; -7.5]; end
+    if ~isfield(p, 'T_upper_offset'), p.T_upper_offset = [ 4.5;  4.5;  4.5]; end
     if ~isfield(p, 'dT_init'), p.dT_init = 3.0; end
     if ~isfield(p, 'MinPointsForGP'), p.MinPointsForGP = 3; end
     if ~isfield(p, 'NoveltyRadius'), p.NoveltyRadius = 0.25; end

@@ -1,4 +1,4 @@
-function J = objectiveFun_CEI(T, massflow_ref, GP_Power, GP_Pdis, GP_ds1, GP_ds2, GP_ds3, Dataset_massflowrate, Dataset_cost, params)
+function J = objectiveFun_CEI_parallel(T, massflow_ref, GP_Power, GP_Pdis, GP_ds1, GP_ds2, GP_ds3, Dataset_massflowrate, Dataset_cost, params)
 % OBJECTIVEFUN_CEI Computes the Constrained Expected Improvement (CEI).
 %
 % Maximizes the Expected Improvement (EI) of power consumption, penalized by 

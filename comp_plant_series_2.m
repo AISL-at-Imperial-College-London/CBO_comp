@@ -1,4 +1,4 @@
-function [sys,x0,str,tss]=comp_plant(t,x,u,flag,Param,X_ss)
+function [sys,x0,str,tss]=comp_plant_series_2(t,x,u,flag,Param,X_ss)
 
 switch flag,
 
@@ -71,7 +71,7 @@ Recycle_opening = u(4); %
 
 P_int    = u(5);  % input pressure
 
-T_in = u(6); % question:do i need to put T_in as a step function as the sixth input as the paraellel one?
+T_in = u(6); 
 % States
 
 p3 = x(1);%
@@ -102,17 +102,17 @@ m_rec_ss = Valve_rec_gain*Recycle_opening*sqrt(abs(p4 - p3))*(p4 - p3)/abs(p4 - 
 
 % newly add about the efficiency line (start)
 
-% Step 1: 计算 omega_rpm 和百分比
-omega_rpm = omega_comp / (2*pi/60);
-omega_percent = omega_rpm / 8370 * 100;  % 注意8370为额定转速，如有不同需替换
 
-% Step 2: 用多项式拟合压力比
+omega_rpm = omega_comp / (2*pi/60);
+omega_percent = omega_rpm / 8370 * 100;  
+
+
 %pr_coeff = [2.690940401290303  -0.013878128060951  -0.040925719808930   0.000986961896765  -0.000418575028867   0.000024527875520];
 %pr2 = pr_coeff * [1; m_comp; omega_percent; m_comp*omega_percent; m_comp*m_comp; omega_percent*omega_percent];
 pr2=x(4);
 
 
-% Step 3: 用多项式拟合效率
+
 eta = 0.90 - (5.5*(m_comp - 0.52).^2 - 1.8*(m_comp - 0.52).*(pr2 - 1.7) + 1.5*(pr2 - 1.7).^2);
 
 
@@ -121,12 +121,12 @@ eta = 0.90 - (5.5*(m_comp - 0.52).^2 - 1.8*(m_comp - 0.52).*(pr2 - 1.7) + 1.5*(p
     % eta = 0.00001
 % end
 
-% Step 4: 计算 T_out 和 Power（假设 u(5) 是 T_in）
+
 kappa = 1.27;
 T_out = u(6) * (pr2)^((kappa - 1)/(kappa * eta));
 
 if ~isreal(T_out) || isnan(T_out) || isinf(T_out)
-    T_out = 300;  % 设置一个安全默认值
+    T_out = 300; 
 end
 
 %if ~isreal(T_out)
@@ -134,14 +134,14 @@ end
   %   T_out = 0;
 %end
 
-% 单位质量所需功
+
 yp = ((0.9 * 8314 * (20+273))/16.04)*(kappa / (kappa - 1))*(pr2^((kappa - 1)/kappa) - 1);
 
-% 总功率
+
 POWER = yp / eta * m_comp;
 
 if ~isreal(POWER) || isnan(POWER) || isinf(POWER)
-    POWER = 100;  % 或者其他默认值
+    POWER = 100;  
 end
 
 % newly add about the efficiency line (end)
@@ -156,7 +156,7 @@ sys(6) = m_in; %
 sys(7) = m_out; % 
 sys(8) = m_rec; % 
 
-sys(9)  = eta;    % Step 5: 将这三个新变量加入输出
+sys(9)  = eta;    
 sys(10) = T_out;
 sys(11) = POWER;
 % ******************************************
@@ -172,7 +172,7 @@ Inflow_opening = u(2); %
 Outflow_opening = u(3); % 
 Recycle_opening = u(4); % 
 P_int    = u(5);  % input pressure
-T_in = u(6); % question:do i need to put T_in as a step function as the sixth input as the paraellel one?
+T_in = u(6); 
 % States
 
 p3 = x(1);%

@@ -89,7 +89,7 @@ function [T_next, Dataset_T, Dataset_Y, GP_Power, GP_Pdis, GP_ds1, GP_ds2, GP_ds
             T_next = chooseNextDOEPoint(DOE_points, Dataset_T, params);
         elseif ~isempty(GP_Power)
             % Pass Dataset constraint (massflow) and cost (power) to CEI solver
-            T_next = solveOptimization_CEI(Current_setpoint, massflow_ref, GP_Power, GP_Pdis, GP_ds1, GP_ds2, GP_ds3, Dataset_Y(:,2), Dataset_Y(:,1), params);
+            T_next = solveOptimization_CEI_parallel(Current_setpoint, massflow_ref, GP_Power, GP_Pdis, GP_ds1, GP_ds2, GP_ds3, Dataset_Y(:,2), Dataset_Y(:,1), params);
         end
     end
     
@@ -124,9 +124,9 @@ end
 %% ------------------------------------------------------------------------
 function p = initParams(p)
     if ~isfield(p, 'sampleTime'), p.sampleTime = 50; end
-    if ~isfield(p, 'T_nom'), p.T_nom = [15; 16; 18]; end
-    if ~isfield(p, 'T_lower_offset'), p.T_lower_offset = [-6; -7; -9]; end
-    if ~isfield(p, 'T_upper_offset'), p.T_upper_offset = [ 6;  5;  3]; end
+    if ~isfield(p, 'T_nom'), p.T_nom = [16.5; 16.5; 16.5]; end
+    if ~isfield(p, 'T_lower_offset'), p.T_lower_offset = [-7.5; -7.5; -7.5]; end
+    if ~isfield(p, 'T_upper_offset'), p.T_upper_offset = [4.5; 4.5; 4.5]; end
     if ~isfield(p, 'dT_init'), p.dT_init = 3.0; end
     if ~isfield(p, 'MinPointsForGP'), p.MinPointsForGP = 3; end
     if ~isfield(p, 'NoveltyRadius'), p.NoveltyRadius = 0.25; end

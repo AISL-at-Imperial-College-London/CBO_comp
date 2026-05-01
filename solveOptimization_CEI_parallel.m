@@ -1,8 +1,8 @@
-function T_opt = solveOptimization_CEI(T0, massflow_ref, GP_Power, GP_Pdis, GP_ds1, GP_ds2, GP_ds3, Dataset_massflowrate, Dataset_cost, params)
+function T_opt = solveOptimization_CEI_parallel(T0, massflow_ref, GP_Power, GP_Pdis, GP_ds1, GP_ds2, GP_ds3, Dataset_massflowrate, Dataset_cost, params)
 % SOLVEOPTIMIZATION_CEI Global search using GA for CEI formulation.
 
     % Define the objective function handle specific to CEI
-    objFun = @(T) objectiveFun_CEI(T, massflow_ref, GP_Power, GP_Pdis, GP_ds1, GP_ds2, GP_ds3, Dataset_massflowrate, Dataset_cost, params);
+    objFun = @(T) objectiveFun_CEI_parallel(T, massflow_ref, GP_Power, GP_Pdis, GP_ds1, GP_ds2, GP_ds3, Dataset_massflowrate, Dataset_cost, params);
 
     % Torque bounds
     T_nom = params.T_nom(:).';

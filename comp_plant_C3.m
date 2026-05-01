@@ -1,4 +1,4 @@
-function [sys,x0,str,tss]=comp_plant(t,x,u,flag,Param,X_ss)
+function [sys,x0,str,tss]=comp_plant_C3(t,x,u,flag,Param,X_ss)
 
 switch flag,
 
@@ -42,7 +42,7 @@ function [sys,x0,str,tss] = mdlInitialSizes(t,x,u,X_ss);
 % Call simsize of a sizes structure.
 
 sizes = simsizes;
-sizes.NumContStates  = 6;     % continuous states（多了一个连接接口）
+sizes.NumContStates  = 6;     % continuous states
 sizes.NumDiscStates  = 0;     % discrete states
 sizes.NumOutputs     = 12;     % outputs of model (add eta, T_out, POWER)
 sizes.NumInputs      = 6;     % inputs of model (add T)
@@ -61,7 +61,7 @@ tss = [0,0];	              % sample time: [period, offset].
 function [sys] = mdlOutputs(t,x,u,Param);
 
 global Outflow_opening p1 p2 P_int pr1
-sys = zeros(12,1);  % 确保输出向量是长度为 11 的 real vector
+sys = zeros(12,1);  
 
 Valve_in_gain = 1/(sqrt(1.05e5-1e5));         % opening gain
 Valve_rec_gain = 1/(sqrt(1.2891e5-1e5));      % opening gain
@@ -73,7 +73,7 @@ torque_drive = u(1);         %
 Inflow_opening = u(2);       % 
 Outflow_opening = u(3);      % 
 Recycle_opening = u(4);      % 
-T_in = u(5); % question:do i need to put T_in as a step function as the sixth input as the paraellel one?
+T_in = u(5); 
 Out_pres   = u(6);        % output pressure
 % States
 
@@ -103,16 +103,16 @@ m_rec_ss = Valve_rec_gain*Recycle_opening*sqrt(abs(p2 - p1))*(p2 - p1)/abs(p2 - 
 
 % newly add about the efficiency line (start)
 
-% Step 1: 计算 omega_rpm 和百分比
-omega_rpm = omega_comp / (2*pi/60);
-omega_percent = omega_rpm / 8370 * 100;  % 注意8370为额定转速，如有不同需替换
 
-% Step 2: 用多项式拟合压力比
+omega_rpm = omega_comp / (2*pi/60);
+omega_percent = omega_rpm / 8370 * 100; 
+
+
 %pr_coeff = [2.690940401290303  -0.013878128060951  -0.040925719808930   0.000986961896765  -0.000418575028867   0.000024527875520];
 %p_ratio = pr_coeff * [1; m_comp; omega_percent; m_comp*omega_percent; m_comp^2; omega_percent^2];
 pr1=x(4);
 
-% Step 3: 用多项式拟合效率
+
 eta = 0.75 - (8.75*(m_comp - 0.55).^2 - 3.0*(m_comp - 0.55).*(pr1 - 1.675) + 2.0*(pr1 - 1.675).^2);
 
 
@@ -120,12 +120,12 @@ eta = 0.75 - (8.75*(m_comp - 0.55).^2 - 3.0*(m_comp - 0.55).*(pr1 - 1.675) + 2.0
  %    clear eta
   %   eta = 0.00001
 % end
-% Step 4: 计算 T_out 和 Power（假设 u(5) 是 T_in）
+
 kappa = 1.27;
 T_out = u(5) * (pr1)^((kappa - 1)/(kappa * eta));
 
 if ~isreal(T_out) || isnan(T_out) || isinf(T_out)
-    T_out = 300;  % 设置一个安全默认值
+    T_out = 300;  
 end
 
 %if ~isreal(T_out)
@@ -133,14 +133,14 @@ end
   %   T_out = 0;
 %end
 
-% 单位质量所需功
+
 yp = ((0.9 * 8314 * (20+273))/16.04)*(kappa / (kappa - 1))*(pr1^((kappa - 1)/kappa) - 1);
 
-% 总功率
+
 POWER = yp / eta * m_comp;
 
 if ~isreal(POWER) || isnan(POWER) || isinf(POWER)
-    POWER = 100;  % 或者其他默认值
+    POWER = 100;  
 end
 
 % newly add about the efficiency line (end)
