@@ -1,5 +1,4 @@
 function T_opt = solveOptimization_CEI_series(T0, P_dis_ref, GP_Power, GP_Pdis, GP_ds1, GP_ds2, Dataset_pressure, Dataset_cost, params)
-% SOLVEOPTIMIZATION_CEI_SERIES Global search using GA for 2-compressor series CEI.
 
     objFun = @(T) objectiveFun_CEI_series(T, P_dis_ref, GP_Power, GP_Pdis, GP_ds1, GP_ds2, Dataset_pressure, Dataset_cost, params);
 

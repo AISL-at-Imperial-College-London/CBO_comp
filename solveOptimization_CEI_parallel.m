@@ -1,16 +1,12 @@
 function T_opt = solveOptimization_CEI_parallel(T0, massflow_ref, GP_Power, GP_Pdis, GP_ds1, GP_ds2, GP_ds3, Dataset_massflowrate, Dataset_cost, params)
-% SOLVEOPTIMIZATION_CEI Global search using GA for CEI formulation.
 
-    % Define the objective function handle specific to CEI
     objFun = @(T) objectiveFun_CEI_parallel(T, massflow_ref, GP_Power, GP_Pdis, GP_ds1, GP_ds2, GP_ds3, Dataset_massflowrate, Dataset_cost, params);
 
-    % Torque bounds
     T_nom = params.T_nom(:).';
     lb = T_nom + params.T_lower_offset(:).';
     ub = T_nom + params.T_upper_offset(:).';
     dim = numel(lb);
 
-    % EA hyperparameters
     npop        = params.eaPopSize;         
     ngen        = params.eaNumGenerations;  
     cr          = params.eaCrossoverRate;   
@@ -18,7 +14,6 @@ function T_opt = solveOptimization_CEI_parallel(T0, massflow_ref, GP_Power, GP_P
     sigma_mut   = params.eaMutationStd;     
     tournamentK = params.eaTournamentSize;  
 
-    % Initialize population
     pop = zeros(npop, dim);
     pop(1,:) = min(max(T0(:).', lb), ub); 
     for i = 2:npop
@@ -28,7 +23,6 @@ function T_opt = solveOptimization_CEI_parallel(T0, massflow_ref, GP_Power, GP_P
     fitness = zeros(npop,1);
     for i = 1:npop, fitness(i) = objFun(pop(i,:)); end
 
-    % Evolution loop
     for g = 1:ngen
         newpop = pop;
         for i = 1:npop

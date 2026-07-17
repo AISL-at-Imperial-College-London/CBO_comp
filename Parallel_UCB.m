@@ -1,26 +1,4 @@
 function [sys,x0,str,ts] = Parallel_UCB(t,x,u,flag,params)
-% Parallel_ucb
-%
-% MATLAB Level-1 S-function for real-time load-sharing optimization (RTO)
-% of a 3-compressor parallel network using Gaussian Process surrogates 
-% and an evolutionary algorithm.
-%
-% INPUTS (u):
-%   u(1) : P_tot         (total power consumption)
-%   u(2) : massflow_meas (measured massflowrate)
-%   u(3) : ds1_meas      (distance to surge compressor 1)
-%   u(4) : ds2_meas      (distance to surge compressor 2)
-%   u(5) : ds3_meas      (distance to surge compressor 3)
-%   u(6) : T1_meas       (measured torque 1)
-%   u(7) : T2_meas       (measured torque 2)
-%   u(8) : T3_meas       (measured torque 3)
-%   u(9) : massflow_ref  (reference massflowrate)
-%   u(10): SS_flag       (steady-state indicator: 0 = no SS, 1 = SS)
-%
-% OUTPUTS:
-%   sys(1) : T1_cmd (commanded torque 1)
-%   sys(2) : T2_cmd (commanded torque 2)
-%   sys(3) : T3_cmd (commanded torque 3)
 
 persistent Dataset_T Dataset_Y ...
            GP_Power GP_Pdis GP_ds1 GP_ds2 GP_ds3...
@@ -98,7 +76,7 @@ function [T_next, Dataset_T, Dataset_Y, GP_Power, GP_Pdis, GP_ds1, GP_ds2, GP_ds
     nPoints = size(Dataset_T, 1);
 
     if SS_flag >= 0.5
-        % Novelty Detection
+
         if nPoints == 0
             Dataset_T = T_cur;
             Dataset_Y = [P_tot, massflow_meas, ds1_meas, ds2_meas, ds3_meas];
@@ -113,7 +91,6 @@ function [T_next, Dataset_T, Dataset_Y, GP_Power, GP_Pdis, GP_ds1, GP_ds2, GP_ds
         end
         nPoints = size(Dataset_T, 1);
 
-        % Train GPs
         if dataAdded && nPoints >= params.MinPointsForGP
             D = struct('U', Dataset_T, 'cost', Dataset_Y(:,1), 'constr', Dataset_Y(:,2:5));
             [GP_Power, GP_Pdis, GP_ds1, GP_ds2, GP_ds3] = fit_all_gps(D, params.T_nom + params.T_lower_offset, params.T_nom + params.T_upper_offset);
@@ -123,7 +100,6 @@ function [T_next, Dataset_T, Dataset_Y, GP_Power, GP_Pdis, GP_ds1, GP_ds2, GP_ds
             end
         end
 
-        % Decide Next Action
         if nPoints < params.MinPointsForGP
             T_next = chooseNextDOEPoint(DOE_points, Dataset_T, params);
         elseif ~isempty(GP_Power)
@@ -166,24 +142,24 @@ end
 %% ------------------------------------------------------------------------
 function p = initParams(p)
     if ~isfield(p, 'sampleTime'), p.sampleTime = 50; end
-    if ~isfield(p, 'T_nom'), p.T_nom = [16.5; 16.5; 16.5]; end
-    if ~isfield(p, 'T_lower_offset'), p.T_lower_offset = [-7.5; -7.5; -7.5]; end
-    if ~isfield(p, 'T_upper_offset'), p.T_upper_offset = [ 4.5;  4.5;  4.5]; end
+    if ~isfield(p, 'T_nom'), p.T_nom = [16; 16; 16]; end
+    if ~isfield(p, 'T_lower_offset'), p.T_lower_offset = [-7; -7; -7]; end
+    if ~isfield(p, 'T_upper_offset'), p.T_upper_offset = [ 5;  5;  5]; end
     if ~isfield(p, 'dT_init'), p.dT_init = 3.0; end
     if ~isfield(p, 'MinPointsForGP'), p.MinPointsForGP = 3; end
     if ~isfield(p, 'NoveltyRadius'), p.NoveltyRadius = 0.25; end
     if ~isfield(p, 'NoveltyTol'), p.NoveltyTol = 1e-3; end
     
-    % Core objective weights injected from paper logic
+    % UCB objective parameters
     if ~isfield(p, 'w_power'), p.w_power = 0.01; end
-    if ~isfield(p, 'w_pdis'), p.w_pdis = 2000000; end
+    if ~isfield(p, 'w_pdis'), p.w_pdis = 20000000; end
     if ~isfield(p, 'w_surge'), p.w_surge = 0.01; end
-    if ~isfield(p, 'KappaUCB'), p.KappaUCB = 1.0; end % Note: Usually > 0 for exploration
+    if ~isfield(p, 'KappaUCB'), p.KappaUCB = 0.01; end 
     if ~isfield(p, 'surge_safe_margin'), p.surge_safe_margin = 0.01; end
     if ~isfield(p, 'betaSafe'), p.betaSafe = 3; end
     if ~isfield(p, 'debugMode'), p.debugMode = false; end
 
-    % EA Config
+    % Evolutionary algorithm parameters
     if ~isfield(p, 'eaPopSize'), p.eaPopSize = 25; end
     if ~isfield(p, 'eaNumGenerations'), p.eaNumGenerations = 20; end
     if ~isfield(p, 'eaCrossoverRate'), p.eaCrossoverRate = 0.6; end

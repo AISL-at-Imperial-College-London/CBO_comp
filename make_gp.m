@@ -1,5 +1,5 @@
 function gp = make_gp(X_scaled, y, lb, span, kernelType)
-% MAKE_GP Constructs a standard GP surrogate model.
+
     [~, d] = size(X_scaled);
     y_mean = mean(y);
     y_std  = std(y);

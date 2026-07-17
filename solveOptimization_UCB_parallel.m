@@ -1,8 +1,4 @@
 function T_opt = solveOptimization_UCB_parallel(T0, massflow_ref, GP_Power, GP_Pdis, GP_ds1, GP_ds2, GP_ds3, params)
-% SOLVEOPTIMIZATION Global search using a custom Evolutionary Algorithm (EA).
-%
-% Evolves a population of torque vectors to minimize the composite 
-% acquisition function over the GP surrogate models.
 
     objFun = @(T) objectiveFun_UCB_parallel(T, massflow_ref, GP_Power, GP_Pdis, GP_ds1, GP_ds2, GP_ds3, params);
 
@@ -32,7 +28,6 @@ function T_opt = solveOptimization_UCB_parallel(T0, massflow_ref, GP_Power, GP_P
         fitness(i) = objFun(pop(i,:));
     end
 
-    % --- Evolution loop ---
     for g = 1:ngen
         newpop = pop;
         for i = 1:npop

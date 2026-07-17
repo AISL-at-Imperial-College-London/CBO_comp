@@ -1,8 +1,4 @@
 function [sys,x0,str,ts] = Series_CEI(t,x,u,flag,params)
-% series_cei
-%
-% MATLAB Level-1 S-function for real-time load-sharing optimization (RTO)
-% of a 2-compressor series network using Constrained Expected Improvement (CEI).
 
 persistent Dataset_T Dataset_Y ...
            GP_Power GP_Pdis GP_ds1 GP_ds2 ...
@@ -80,7 +76,6 @@ function [T_next, Dataset_T, Dataset_Y, GP_Power, GP_Pdis, GP_ds1, GP_ds2, Curre
         if dataAdded && nPoints >= params.MinPointsForGP
             D = struct('U', Dataset_T, 'cost', Dataset_Y(:,1), 'constr', Dataset_Y(:,2:4));
             [GP_Power, GP_Pdis, GP_ds1, GP_ds2] = fit_all_gps_series(D, params.T_nom + params.T_lower_offset, params.T_nom + params.T_upper_offset);
-                % --- Post-Processing Export ---
             assignin('base','RTO_Dataset', D);
             assignin('base','RTO_gps', struct( ...
                 'gp_J',  GP_Power, ...
@@ -129,15 +124,15 @@ end
 %% ------------------------------------------------------------------------
 function p = initParams(p)
     if ~isfield(p, 'sampleTime'), p.sampleTime = 50; end
-    if ~isfield(p, 'T_nom'), p.T_nom = [16.5; 16.5]; end
-    if ~isfield(p, 'T_lower_offset'), p.T_lower_offset = [-5.5; -5.5]; end
-    if ~isfield(p, 'T_upper_offset'), p.T_upper_offset = [ 4.5;  4.5]; end
+    if ~isfield(p, 'T_nom'), p.T_nom = [16; 16]; end
+    if ~isfield(p, 'T_lower_offset'), p.T_lower_offset = [-5; -5]; end
+    if ~isfield(p, 'T_upper_offset'), p.T_upper_offset = [ 5;  5]; end
     if ~isfield(p, 'dT_init'), p.dT_init = 3.0; end
     if ~isfield(p, 'MinPointsForGP'), p.MinPointsForGP = 3; end
     if ~isfield(p, 'NoveltyRadius'), p.NoveltyRadius = 0.25; end
     if ~isfield(p, 'NoveltyTol'), p.NoveltyTol = 1e-3; end
     
-    if ~isfield(p, 'surge_safe_margin'), p.surge_safe_margin = 0.01; end % 0.01 as per series CEI
+    if ~isfield(p, 'surge_safe_margin'), p.surge_safe_margin = 0.01; end
     if ~isfield(p, 'betaSafe'), p.betaSafe = 3; end 
     if ~isfield(p, 'cei_track_tol'), p.cei_track_tol = 1; end 
 

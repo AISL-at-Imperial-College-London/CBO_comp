@@ -1,8 +1,4 @@
 function [sys,x0,str,ts] = Parallel_CEI(t,x,u,flag,params)
-% parallel_cei_2
-%
-% MATLAB Level-1 S-function for real-time load-sharing optimization (RTO)
-% of a 3-compressor parallel network using Constrained Expected Improvement (CEI).
 
 persistent Dataset_T Dataset_Y ...
            GP_Power GP_Pdis GP_ds1 GP_ds2 GP_ds3...
@@ -15,7 +11,8 @@ switch flag
         ParamsInit = initParams(params);
         [sys,x0,str,ts] = mdlInitializeSizes(ParamsInit);
         
-        Dataset_T = []; Dataset_Y = [];
+        Dataset_T = []; 
+        Dataset_Y = [];
         GP_Power = []; GP_Pdis = []; GP_ds1 = []; GP_ds2 = []; GP_ds3 = [];
         
         Current_setpoint = ParamsInit.T_nom(:).';
@@ -88,7 +85,7 @@ function [T_next, Dataset_T, Dataset_Y, GP_Power, GP_Pdis, GP_ds1, GP_ds2, GP_ds
         if nPoints < params.MinPointsForGP
             T_next = chooseNextDOEPoint(DOE_points, Dataset_T, params);
         elseif ~isempty(GP_Power)
-            % Pass Dataset constraint (massflow) and cost (power) to CEI solver
+            % Pass observed demand and power values for incumbent selection.
             T_next = solveOptimization_CEI_parallel(Current_setpoint, massflow_ref, GP_Power, GP_Pdis, GP_ds1, GP_ds2, GP_ds3, Dataset_Y(:,2), Dataset_Y(:,1), params);
         end
     end
@@ -124,20 +121,20 @@ end
 %% ------------------------------------------------------------------------
 function p = initParams(p)
     if ~isfield(p, 'sampleTime'), p.sampleTime = 50; end
-    if ~isfield(p, 'T_nom'), p.T_nom = [16.5; 16.5; 16.5]; end
-    if ~isfield(p, 'T_lower_offset'), p.T_lower_offset = [-7.5; -7.5; -7.5]; end
-    if ~isfield(p, 'T_upper_offset'), p.T_upper_offset = [4.5; 4.5; 4.5]; end
+    if ~isfield(p, 'T_nom'), p.T_nom = [16; 16; 16]; end
+    if ~isfield(p, 'T_lower_offset'), p.T_lower_offset = [-7; -7; -7]; end
+    if ~isfield(p, 'T_upper_offset'), p.T_upper_offset = [5; 5; 5]; end
     if ~isfield(p, 'dT_init'), p.dT_init = 3.0; end
     if ~isfield(p, 'MinPointsForGP'), p.MinPointsForGP = 3; end
     if ~isfield(p, 'NoveltyRadius'), p.NoveltyRadius = 0.25; end
     if ~isfield(p, 'NoveltyTol'), p.NoveltyTol = 1e-3; end
     
-    % CEI Safety & Tracking
+    % CEI parameters
     if ~isfield(p, 'surge_safe_margin'), p.surge_safe_margin = 0.01; end 
     if ~isfield(p, 'betaSafe'), p.betaSafe = 3; end 
     if ~isfield(p, 'cei_track_tol'), p.cei_track_tol = 0.001; end 
 
-    % EA Config
+    % Evolutionary algorithm parameters
     if ~isfield(p, 'eaPopSize'), p.eaPopSize = 25; end
     if ~isfield(p, 'eaNumGenerations'), p.eaNumGenerations = 20; end
     if ~isfield(p, 'eaCrossoverRate'), p.eaCrossoverRate = 0.6; end

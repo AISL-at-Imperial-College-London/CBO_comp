@@ -1,15 +1,3 @@
-% %%% Initial conditions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% p1  = 99272.2841101925;       % pressure tank1
-% p2  =  134706.764623233;  % pressure tank2
-% omega_comp =  3498.89032123797;     % compressor speed
-% p_ratio =  1.35693881502188;    % pressure ratio
-% m_comp = 0.535142646408313;       % mass flow
-% m_rec = 0;         % recycle valve opening
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% Xinit=[p1 p2 m_comp p_ratio omega_comp m_rec]';
 
      Xinit1 = [          95322.9245471678
          171445.501002153         

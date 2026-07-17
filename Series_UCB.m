@@ -85,8 +85,7 @@ function [T_next, Dataset_T, Dataset_Y, GP_Power, GP_Pdis, GP_ds1, GP_ds2, Curre
 
         if dataAdded && nPoints >= params.MinPointsForGP
             D = struct('U', Dataset_T, 'cost', Dataset_Y(:,1), 'constr', Dataset_Y(:,2:4));
-            
-            % Use the series GP fitter we built previously
+
             [GP_Power, GP_Pdis, GP_ds1, GP_ds2] = fit_all_gps_series(D, params.T_nom + params.T_lower_offset, params.T_nom + params.T_upper_offset);
                 % --- Post-Processing Export ---
             assignin('base','RTO_Dataset', D);
@@ -139,11 +138,11 @@ function p = initParams(p)
     if ~isfield(p, 'sampleTime'), p.sampleTime = 50; end
     
     % Series Network Specific Limits
-    if ~isfield(p, 'T_nom'), p.T_nom = [16.5; 16.5]; end
-    if ~isfield(p, 'T_lower_offset'), p.T_lower_offset = [-5.5; -5.5]; end
-    if ~isfield(p, 'T_upper_offset'), p.T_upper_offset = [ 4.5;  4.5]; end
+    if ~isfield(p, 'T_nom'), p.T_nom = [16; 16]; end
+    if ~isfield(p, 'T_lower_offset'), p.T_lower_offset = [-5; -5]; end
+    if ~isfield(p, 'T_upper_offset'), p.T_upper_offset = [ 5;  5]; end
     if ~isfield(p, 'dT_init'), p.dT_init = 3.0; end
-    if ~isfield(p, 'MinPointsForGP'), p.MinPointsForGP = 5; end
+    if ~isfield(p, 'MinPointsForGP'), p.MinPointsForGP = 3; end
     if ~isfield(p, 'NoveltyRadius'), p.NoveltyRadius = 0.25; end
     if ~isfield(p, 'NoveltyTol'), p.NoveltyTol = 1e-3; end
     
@@ -153,7 +152,7 @@ function p = initParams(p)
     if ~isfield(p, 'w_surge'), p.w_surge = 10000; end
     
     % UCB & Safety Parameters
-    if ~isfield(p, 'KappaUCB'), p.KappaUCB = 1.0; end
+    if ~isfield(p, 'KappaUCB'), p.KappaUCB = 0.01; end
     if ~isfield(p, 'surge_safe_margin'), p.surge_safe_margin = 0.01; end 
     if ~isfield(p, 'betaSafe'), p.betaSafe = 3; end 
 

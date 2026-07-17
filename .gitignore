@@ -1,0 +1,5 @@
+# MATLAB and Simulink generated files
+slprj/
+*.slxc
+*.asv
+*.autosave

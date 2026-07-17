@@ -1,5 +1,5 @@
 function [mu, sigma] = gp_predict(gp, x, isP4)
-% GP_PREDICT Predicts mean and std for standard and linear-trend GPs.
+
     if nargin < 3, isP4 = false; end
     
     x = x(:).';

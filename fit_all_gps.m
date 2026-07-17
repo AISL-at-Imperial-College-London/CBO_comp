@@ -1,5 +1,4 @@
 function [gp_J, gp_g1, gp_g2, gp_g3, gp_g4] = fit_all_gps(D, lb, ub)
-% FIT_ALL_GPS Trains all surrogate models for the compressor network.
     
     X = D.U;
     if isempty(X)

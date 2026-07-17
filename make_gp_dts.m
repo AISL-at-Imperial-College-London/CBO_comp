@@ -1,7 +1,7 @@
 function gp = make_gp_dts(X_scaled, y, lb, span, kernelType)
-% MAKE_GP_DTS Custom GP fit with fixed prior mean for distance-to-surge.
+
     [~, d] = size(X_scaled);
-    y_mean_fixed = 0.00; % Physical prior belief of safety
+    y_mean_fixed = 0.00; % Physical prior
     
     y_std = std(y);
     if y_std == 0, y_std = 1; end

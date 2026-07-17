@@ -4,12 +4,11 @@ function T_opt = solveOptimization_UCB_series(T0, P_dis_ref, GP_Power, GP_Pdis, 
     % Define the objective function handle
     objFun = @(T) objectiveFun_UCB_series(T, P_dis_ref, GP_Power, GP_Pdis, GP_ds1, GP_ds2, params);
 
-    % Torque bounds
+
     lb = params.T_nom(:).' + params.T_lower_offset(:).';
     ub = params.T_nom(:).' + params.T_upper_offset(:).';
     dim = numel(lb);
 
-    % EA hyperparameters
     npop        = params.eaPopSize;         
     ngen        = params.eaNumGenerations;  
     cr          = params.eaCrossoverRate;   
@@ -17,7 +16,6 @@ function T_opt = solveOptimization_UCB_series(T0, P_dis_ref, GP_Power, GP_Pdis, 
     sigma_mut   = params.eaMutationStd;     
     tournamentK = params.eaTournamentSize;  
 
-    % Initialize population
     pop = zeros(npop, dim);
     pop(1,:) = min(max(T0(:).', lb), ub); 
     for i = 2:npop, pop(i,:) = lb + rand(1,dim).*(ub - lb); end
@@ -25,7 +23,6 @@ function T_opt = solveOptimization_UCB_series(T0, P_dis_ref, GP_Power, GP_Pdis, 
     fitness = zeros(npop,1);
     for i = 1:npop, fitness(i) = objFun(pop(i,:)); end
 
-    % Evolution loop
     for g = 1:ngen
         newpop = pop;
         for i = 1:npop

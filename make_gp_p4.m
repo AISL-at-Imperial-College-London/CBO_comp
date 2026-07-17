@@ -1,8 +1,7 @@
 function gp = make_gp_p4(X_scaled, X_orig, y, lb, span)
-% MAKE_GP_P4 GP with linear trend mean and SE-ARD kernel on residuals.
+
     [N, d] = size(X_scaled);
-    
-% Fit linear trend dynamically for any number of compressors
+
     Phi = [ones(N,1), X_orig];
     beta = Phi \ y;
     m_train = Phi * beta;      

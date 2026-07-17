@@ -1,5 +1,4 @@
 function [gp_J, gp_g1, gp_g2, gp_g3] = fit_all_gps_series(D, lb, ub)
-% FIT_ALL_GPS_SERIES Trains surrogate models for the 2-compressor series network.
     
     X = D.U;
     if isempty(X)
