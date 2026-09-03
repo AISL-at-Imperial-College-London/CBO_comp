@@ -1,5 +1,11 @@
 # Safety-aware load sharing in compressor stations using constrained Bayesian optimization
 
+## Description
+
+This repository contains the MATLAB code that accompanies the paper:
+
+> Liqiu Dong, Mohamed Becha, Johannes Köhler, Marta Zagorowska, and Mehmet Mercangöz, "Safety-aware load sharing in compressor stations using constrained Bayesian optimization", 2026, [*Computers & Chemical Engineering*](https://doi.org/10.1016/j.compchemeng.2026.109865).
+
 This repository contains the MATLAB/Simulink implementation of a data-driven Real-Time Optimization (RTO) framework for parallel and serial centrifugal compressor networks. The algorithm utilizes Gaussian Processes (GPs) and Genetic Algorithms (GAs) to minimize power consumption while strictly satisfying dynamic surge limits and demand tracking constraints.
 
 
