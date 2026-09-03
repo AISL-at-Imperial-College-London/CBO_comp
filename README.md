@@ -1,4 +1,4 @@
-# Data-Driven Real-Time Optimization for Compressor Networks
+# Safety-aware load sharing in compressor stations using constrained Bayesian optimization
 
 This repository contains the MATLAB/Simulink implementation of a data-driven Real-Time Optimization (RTO) framework for parallel and serial centrifugal compressor networks. The algorithm utilizes Gaussian Processes (GPs) and Genetic Algorithms (GAs) to minimize power consumption while strictly satisfying dynamic surge limits and demand tracking constraints.
 
